@@ -6,5 +6,16 @@ rails g controller Plays
 Add to routes =>
   'resources :plays
   root 'plays#index'
-Create the file "index.html.erb" inside "/app/views/plays/"
+Create the file "index.html.erb" inside "/app/views/plays/" and inside the new file add =>
   '<h1> It's running dude! <h1'
+Add to Gemfile =>
+  gem 'bootstrap-sass', '~> 3.4', '>= 3.4.1'
+  gem 'simple_form', '~> 4.1'
+Run bundle install
+Run rails generate simple_form:install --bootstrap
+Add rename "app/assets/stylesheets/application.css" to "application.css.scss" and inside add the following =>
+  '@import "bootstrap-sprockets";
+   @import "bootstrap";'}'
+Inside "app/assets/javascripts/application.js" add =>
+  '//= require bootstrap-sprockets'
+Restart the server.

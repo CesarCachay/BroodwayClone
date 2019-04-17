@@ -1,24 +1,20 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This will be the actions I made to create the webapp:
 
-Things you may want to cover:
+Add protect_from_forgery :with :exception in =>
+ 'application_controller.rb'
 
-* Ruby version
+rails g model Play title:string description:text director:string
 
-* System dependencies
+rake db:migrate
 
-* Configuration
+rails g controller Plays
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Add to routes =>
+  'resources :plays
+  root 'plays#index'
+  
+Create the file "index.html.erb" inside "/app/views/plays/" and inside the new file add =>
+  '<h1> It's running dude! </h1>'
+  
