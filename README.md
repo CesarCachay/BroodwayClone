@@ -35,6 +35,7 @@ Inside "app/assets/javascripts/application.js" add =>
 
 Restart the server.
 
+# PART 2
 Add in plays_controller the following =>
 
   'def new
@@ -62,3 +63,54 @@ Inside that new file add =>
     <%= f.input :director %>
     <%= f.button :submit %>
   <% end %>'
+
+  # PART 3
+
+In our plays_controller.rb we are going to add the following in the method create =>
+
+  if @play.save
+    redirect_to root_path
+  else
+    render 'new'
+  end
+
+After that, we are going able to save and submit new plays in our webapp. Let's save one play in our app for now it will redirect to our current home page! you could check if it was saved in the database using Play.all 
+
+Now, we want to list all our plays that will be saved in our app. For that reason in our "plays_controller.rb" inside the action "index" add =>
+
+  'def index
+    @plays = Play.all.order("created_at DESC")
+   end'
+
+After that, inside "/app/views/plays/index.html.erb" add this =>
+
+  '<% @plays.each do |play| %>
+    <h2><%= link_to play.title, play_path(play)%></h2>
+    <% end %>
+
+  <%= link_to "Add Play", new_play_path %>' 
+
+In our plays_controller we are going to add the following =>
+
+ 'before_action :find_play, only: [:show, :edit, :update, :destroy] #before "index" action
+
+  def show
+  end
+
+  def find_play #inside private
+    @play = Play.find(params[:id])
+  end'
+
+Create in the path "app/views/plays" the file show.html.erb which will include =>
+  <h2><%= @play.title %></h2>
+  <h3><%= @play.director %></h3>
+  <p><%= @play.description %></p>
+
+After doing that, you could go to "http://localhost:3000/plays/new" and create another play
+
+
+
+
+
+
+
