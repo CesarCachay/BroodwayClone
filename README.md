@@ -108,6 +108,65 @@ Create in the path "app/views/plays" the file show.html.erb which will include =
 
 After doing that, you could go to "http://localhost:3000/plays/new" and create another play
 
+# PART 4
+
+In the file plays_controller.rb add the following =>
+
+ 'def edit
+  end
+
+  def update
+    if @play.update(play_params)
+      redirect_to play_path(@play)
+    else
+      render 'edit'
+    end
+  end
+
+  def destroy
+    @play.destroy
+    redirect_to root_path
+  end'
+
+Then, create the file edit.html.erb in the path "/app/views/plays" and type this there =>
+
+ '<h1>  New Broodway Play dude! </h1>
+  <%= render 'form' %>'
+
+Inside show.html.erb add to have navigation links =>
+
+ '<%= link_to "Back", root_path %>
+  <%= link_to "Edit", edit_play_path(@play)%>
+  <%= link_to "Delete", play_path(@play), method: :delete, data: { confirm: "Are you sure?" } %>'
+
+# PART 5
+Add the new gem for users and then, bundle install
+  gem 'devise', '~> 4.6', '>= 4.6.2'
+
+Second, use the command: "rails generate devise:install" to include this gem in our project
+
+Third, add this line in development.rb
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+The next step is in our application.html.erb in our body we need to write this
+
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
+
+    <div class="container">
+      <%= yield %>
+    </div> 
+
+Fifth, you could create another play to have more data, and run the commands =>
+
+  rails g devise:views
+  rails g devise User
+  rails db:migrate
+
+Then, go to "http://localhost:3000/users/sign_up" and create 1 user 
+
+
+
 
 
 
