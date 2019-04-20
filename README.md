@@ -299,6 +299,18 @@ Finally, to show in our browser the categories of our plays let's add in "_form.
   <h4><%= @play.category.name %></h4>
 
 
+  #PART 8
+First, in our file "edit.html.erb" we are going to delete the line => render 'form' and add =>
+
+  <%= simple_form_for @play, html: {multipart: true} do |f| %> # {multipart: true} will allow us to upload images
+    <%= f.select :category_id, @categories %>
+    <%= f.input :title, label: "Play Title"%>
+    <%= f.input :description %>
+    <%= f.input :director %>
+    <%= f.button :submit %>
+  <% end %>
+
+Second, 
 
 
 
