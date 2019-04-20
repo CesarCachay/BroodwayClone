@@ -193,4 +193,7 @@ In the body of our application.html.erb add the following =>
       </div>
     </nav>
 
-Then, reload the webapp.
+Then, reload the webapp and sign out the current user.
+
+Now, run the command => "rails g migration_add_user_id_to_plays user_id:integer" and proceed with "rails db:migrate"
+
