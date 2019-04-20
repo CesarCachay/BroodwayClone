@@ -171,7 +171,7 @@ Then, go to "http://localhost:3000/users/sign_up" and create 1 user
 
 In the body of our application.html.erb add the following =>
 
-      <nav class="nav navbar-default">
+      <nav class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
           <%= link_to "Broadway", root_path, class: "navbar-brand" %>
@@ -196,4 +196,58 @@ In the body of our application.html.erb add the following =>
 Then, reload the webapp and sign out the current user.
 
 Now, run the command => "rails g migration_add_user_id_to_plays user_id:integer" and proceed with "rails db:migrate"
+
+ # PART 7
+
+First, we need to refactor our "plays_controller.rb" with the following => 
+
+  def new
+   @play = current_user.play.build
+  end
+
+  def create
+    @play = current_user.play.build(play_params)
+    if @play.save
+      redirect_to root_path
+    else
+      render 'new'
+    end
+  end
+
+Second, in the file "index.html.erb" we are going to get of rid this line =>
+
+  <%= link_to "Add Play", new_play_path %>
+
+Third, Log In with the user you created. After that we need to link the models "user and play" including this lines =>
+
+  In the class inside of the file "user.rb" write this line => has_many :plays
+  Inside the class of the file "play.rb" add => belongs_to :user
+
+Next step is in the file "show.html.erb" delete: <%= link_to "Back", root_path %> AND refactor like this =>
+
+  <div class="links btn-group"> 
+    <% if user_signed_in? %>
+      <% if @play.user_id == current_user.id %>
+        <%= link_to "Edit", edit_play_path(@play)%>
+        <%= link_to "Delete", play_path(@play), method: :delete, data: { confirm: "Are you sure?" } %>
+      <% end %>
+    <% end %> 
+  </div>
+
+Now, we will run the command => 
+
+  rails g model Category name:string
+  rails g migration add_category_id_to_plays category_id:integer
+  rails db:migrate
+
+Then, we need to link the new model adding =>
+
+ In the file "play.rb" => belongs_to :category 
+ In "category.rb" => has_many :plays
+
+ 
+
+
+
+
 
