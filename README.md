@@ -310,11 +310,48 @@ First, in our file "edit.html.erb" we are going to delete the line => render 'fo
     <%= f.button :submit %>
   <% end %>
 
-Second, 
+Second, in "application.html.erb" we need to add the following =>
+
+  <ul class="nav navbar-nav">
+    <li class="dropdown"> 
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sort <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          <% Category.all.each do |category| %>
+            <li class="<%= 'active' if params[:category] == category.name %>">
+              <%= link_to category.name, plays_path(category: category.name), class: "link" %>
+            </li>
+          <% end %>
+      </ul>
+    </li>
+
+    <% if user_signed_in? %>
+      <li><%= link_to "Add Play", new_play_path %></li>
+    <% end %>
+  </ul>
 
 
+Third, in our plays_controller.rb add in the action index the following =>
 
+  def index
+    if params[:category].blank?
+      @plays = Play.all.order("created_at DESC")
+    else
+      @category_id = Category.find_by(name: params[:category]).id 
+      @plays = Play.where(:category_id => @category_id).order("created_at")
+    end
+  end
 
+Finally, inside index.html.erb we are going to inclue the next lines =>
+
+  <h1 class="current-category"><%= params[:category]%></h1>
+
+  <% if @plays.count == 0 %>
+    <h3>There are no plays in this category</h3>
+  <% else %>
+    <% @plays.each do |play| %>
+      <h2><%= link_to play.title, play_path(play)%></h2>
+    <% end %>
+  <% end %>
 
 
 
