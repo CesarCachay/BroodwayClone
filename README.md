@@ -202,11 +202,11 @@ Now, run the command => "rails g migration_add_user_id_to_plays user_id:integer"
 First, we need to refactor our "plays_controller.rb" with the following => 
 
   def new
-   @play = current_user.play.build
+   @play = current_user.plays.build
   end
 
   def create
-    @play = current_user.play.build(play_params)
+    @play = current_user.plays.build(play_params)
     if @play.save
       redirect_to root_path
     else
@@ -246,7 +246,114 @@ Then, we need to link the new model adding =>
  In "category.rb" => has_many :plays
 
  
+  #PART 8
 
+In "plays_controller.rb" add the following =>
+
+  def new
+   @categories = Category.all.map{ |c| [c.name, c.id]} #this is the new line added in this action!
+  end
+
+  def create
+    @play.category_id = params[:category_id]
+  end
+
+  def edit
+    @categories = Category.all.map{ |c| [c.name, c.id]}
+  end
+
+  def update
+    @play.category_id = params[:category_id]
+  end
+
+  def play_params
+    params.require(:play).permit(:title, :description, :director, :category_id)
+  end
+
+Second in this part we need to add inside the block of the file "_form.html.erb" =>
+
+  <%= select_tag(:category_id, options_for_select(@categories), :prompt => "Select Category" ) %>
+
+Then, open rails c and run the following =>
+
+  Category.create(name: "Classical")
+  Category.create(name: "Drama")
+  Category.create(name: "Comedy")
+  Category.all
+
+The next step is the enter into the rails console and assign manually the categories to our existing plays run this
+
+  rails c 
+  @play = Play.first
+  @play.category_id = 1
+  @play.save
+  @play2 = Play.second
+  @play2.category_id = 3
+  @play2.save
+  @play6 = Play.find(6) #with this command "find" rails will detect by default the "id"
+  @play6.category_id = 2
+  @play6.save
+  
+Finally, to show in our browser the categories of our plays let's add in "_form.html.erb" =>
+
+  <h4><%= @play.category.name %></h4>
+
+
+  #PART 8
+First, in our file "edit.html.erb" we are going to delete the line => render 'form' and add =>
+
+  <%= simple_form_for @play, html: {multipart: true} do |f| %> # {multipart: true} will allow us to upload images
+    <%= f.select :category_id, @categories %>
+    <%= f.input :title, label: "Play Title"%>
+    <%= f.input :description %>
+    <%= f.input :director %>
+    <%= f.button :submit %>
+  <% end %>
+
+Second, in "application.html.erb" we need to add the following =>
+
+  <ul class="nav navbar-nav">
+    <li class="dropdown"> 
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sort <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          <% Category.all.each do |category| %>
+            <li class="<%= 'active' if params[:category] == category.name %>">
+              <%= link_to category.name, plays_path(category: category.name), class: "link" %>
+            </li>
+          <% end %>
+      </ul>
+    </li>
+
+    <% if user_signed_in? %>
+      <li><%= link_to "Add Play", new_play_path %></li>
+    <% end %>
+  </ul>
+
+
+Third, in our plays_controller.rb add in the action index the following =>
+
+  def index
+    if params[:category].blank?
+      @plays = Play.all.order("created_at DESC")
+    else
+      @category_id = Category.find_by(name: params[:category]).id 
+      @plays = Play.where(:category_id => @category_id).order("created_at")
+    end
+  end
+
+Finally, inside index.html.erb we are going to inclue the next lines =>
+
+  <h1 class="current-category"><%= params[:category]%></h1>
+
+  <% if @plays.count == 0 %>
+    <h3>There are no plays in this category</h3>
+  <% else %>
+    <% @plays.each do |play| %>
+      <h2><%= link_to play.title, play_path(play)%></h2>
+    <% end %>
+  <% end %>
+
+  # PART 9 (IMAGE UPLOADING)
 
 
 
