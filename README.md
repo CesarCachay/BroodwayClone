@@ -353,5 +353,8 @@ Finally, inside index.html.erb we are going to inclue the next lines =>
     <% end %>
   <% end %>
 
+  # PART 9 (IMAGE UPLOADING)
+
+
 
 
