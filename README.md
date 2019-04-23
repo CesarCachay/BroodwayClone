@@ -419,6 +419,7 @@ Run the following command
   rails g migration add_user_id_to_reviews user_id:integer
   rake db:migrate
   rails g migration add_play_id_to_reviews play_id:integer
+  rails g controller Reviews 
 
 Add associations in our models 
 
