@@ -355,6 +355,40 @@ Finally, inside index.html.erb we are going to inclue the next lines =>
 
   # PART 9 (IMAGE UPLOADING)
 
+  brew install imagemagick
+  brew install gs
+  gem 'paperclip', '~> 6.1'  
+
+Then, bundle install. After doing that you need to go to "play.rb" and add the following inside its class =>
+
+  class User < ActiveRecord::Base
+    has_attached_file :avatar, styles: { medium: "300x300>", thumb: "100x100>" }, default_url: "/images/:style/missing.png"
+    validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
+  end
+
+Second in development mode, you might add this line to config/environments/development.rb:
+
+  Paperclip.options[:command_path] = "/usr/local/bin/"
+
+Third, run the following command =>
+
+  rails g paperclip Play avatar
+  rails db:migrate
+  rails server
+
+The next step is going to the file "_form.html.erb" and include this line before "selected_tag" also in "edit.html.erb" you should add before "f.select :category_id, @categories"
+
+  <%= f.file_field :avatar %>
+
+Finally in "plays_controller.rb" after private we need to add in our method play_params like this =>
+
+    def play_params
+      params.require(:play).permit(:title, :description, :director, :category_id, :avatar)
+    end
+
+
+
+
 
 
 
