@@ -19,6 +19,7 @@ class PlaysController < ApplicationController
   end
 
   def create
+    @categories = []
     @play = current_user.plays.build(play_params)
     @play.category_id = params[:category_id]
 
@@ -30,10 +31,15 @@ class PlaysController < ApplicationController
   end
 
   def edit
-    @categories = Category.all.map{ |c| [c.name, c.id]}
+    if Category.all
+      @categories = Category.all.map{ |c| [c.name, c.id]}
+    else
+      render 'new'
+    end
   end
 
   def update
+    @categories = []
     @play.category_id = params[:category_id]
     if @play.update(play_params)
       redirect_to play_path(@play)

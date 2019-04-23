@@ -1,8 +1,8 @@
 <% if @play.errors.size > 0 %>
-  <div class="errors">
+  <div>
     <ul>
-      <%= @play.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+      <% @play.errors.full_messages.each do |message| %>
+        <li class="list-group-item list-group-item-danger"><%= message %></li>
       <% end %>
     </ul>
   </div>
@@ -10,7 +10,7 @@
 
 <%= simple_form_for @play do |f| %>
   <%= f.file_field :avatar %>
-  <%= select_tag(:category_id, options_for_select(@categories), :prompt => "Select Category" ) %>
+  <%= select_tag(:category_id, options_for_select(@categories), :prompt => "Select Category" ) %> 
   <%= f.input :title, label: "Play Title"%>
   <%= f.input :description %>
   <%= f.input :director %>
