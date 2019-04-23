@@ -30,10 +30,6 @@ ActiveRecord::Schema.define(version: 2019_04_22_205500) do
     t.string "avatar_content_type"
     t.bigint "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.string "play_img_file_name"
-    t.string "play_img_content_type"
-    t.bigint "play_img_file_size"
-    t.datetime "play_img_updated_at"
   end
 
   create_table "users", force: :cascade do |t|

@@ -386,8 +386,30 @@ Finally in "plays_controller.rb" after private we need to add in our method play
       params.require(:play).permit(:title, :description, :director, :category_id, :avatar)
     end
 
+Then, we need to show the images because now we are able to save images and we can check it in the console but to show in our index we will add in the file "index.html.erb" =>
 
+  <h1 class="current-category"><%= params[:category]%></h1>
 
+  <% if @plays.count == 0 %>
+    <h3>There are no plays in this category</h3>
+  <% else %>
+    <div class="row">
+      <% @plays.each do |play| %>
+        <div class="col-md-3">
+          <a href="/plays/ <%= play.id %>">
+            <%= image_tag play.avatar.url(:medium), class: "play" %> 
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+Now If we refresh our webapp we can see now our pictures but they are in different sizes for that reason now we move to "application.css.scss" and add =>
+
+  .play {
+    height: 350px;
+    width: 250px;
+  }
 
 
 

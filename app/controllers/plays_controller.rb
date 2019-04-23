@@ -13,7 +13,7 @@ class PlaysController < ApplicationController
   def show
   end
 
-  def new
+  def new 
    @play = current_user.plays.build
    @categories = Category.all.map{ |c| [c.name, c.id]}
   end
