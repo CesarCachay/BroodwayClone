@@ -411,6 +411,61 @@ Now If we refresh our webapp we can see now our pictures but they are in differe
     width: 250px;
   }
 
+  # PART 10
+
+Run the following command 
+  rails g model Review rating:integer comment:text
+  rake db:migrate
+  rails g migration add_user_id_to_reviews user_id:integer
+  rake db:migrate
+  rails g migration add_play_id_to_reviews play_id:integer
+
+Add associations in our models 
+
+  In review.rb =>
+
+    class Review < ApplicationRecord
+      belongs_to :play
+      belongs_to :user
+    end
+
+  In user.rb =>
+
+    class User < ApplicationRecord
+      has_many :plays
+      has_many :reviews
+      devise :database_authenticatable, :registerable,
+            :recoverable, :rememberable, :validatable
+
+      devise :omniauthable, omniauth_providers: %i[facebook google_oauth2]
+
+      def self.from_omniauth(auth)
+        where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+          user.email = auth.info.email
+          user.password = Devise.friendly_token[0, 20]
+        end
+      end
+    end
+
+
+  In play.rb =>
+
+    class Play < ApplicationRecord
+      belongs_to :user
+      belongs_to :category
+      has_many :reviews
+      validates :title, presence: true
+      validates :description, presence: true
+      validates :director, presence: true
+      validates :category_id, presence: true
+
+      has_attached_file :avatar, styles: { medium: "250x350>", thumb: "250x250>" }, default_url: "/images/:style/missing.png"
+      validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
+    end
+
+
+
+
 
 
 
