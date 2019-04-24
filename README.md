@@ -411,7 +411,7 @@ Now If we refresh our webapp we can see now our pictures but they are in differe
     width: 250px;
   }
 
-  # PART 10
+  # PART 10 (REVIEWS)
 
 Run the following command 
   rails g model Review rating:integer comment:text
@@ -466,7 +466,122 @@ Add associations in our models
 
 
 
+ # PART 11 (DISPLAY NEW REVIEWS CREATED)
 
+First, we need to create a partial called "_form.html.erb" and add =>
 
+    <%= simple_form_for([@play, @play.reviews.build]) do |f| %>
+      <div id="rating-form">
+        <%= f.input :rating %>
+      </div>
 
+      <%= f.input :comment %>
+      <%= f.button :submit, :class => "btn-custom2" %>
+
+    <% end %>
+
+Then in our "reviews_controller.rb" we need to add => 
+
+      class ReviewsController < ApplicationController
+      before_action :find_play 
+      def new
+        @review = Review.new
+      end
+
+      def create
+        @review = Review.new(review_params)
+        @review.play_id = @play.id
+        @review.user_id = current_user.id
+
+        if @review.save
+          redirect_to play_path(@play)
+        else
+          render 'new'
+        end
+      end
+
+      private 
+
+      def review_params
+        params.require(:review).permit(:rating, :comment)
+      end
+
+      def find_play
+        @play = Play.find(params[:play_id])
+      end
+
+    end
+
+The next step is to create a view for the new reviews called "new.html.erb" =>
+
+  <div class="review">
+    <p><%= review.rating %></p>
+    <p class="review-comment"><%= review.comment %></p>
+  </div>
+
+Next we need to create a new partil called "_review.html.erb" and include =>
+
+  <div class="review">
+    <p><%= review.rating %></p>
+    <p class="review-comment"><%= review.comment %></p>
+  </div>
+
+  #PART 12 (DELETE, EDIT AND UPDATE REVIEWS)
+
+First, in our "reviews_controller" we need to add the actions and add the following =>
+
+  before_action :find_review, only [:edit, :update, :destroy]
+
+  def edit
+  end
+
+  def update 
+    if @review.update(review_params)
+      redirect_to play_path(@play)
+    else
+      render 'edit'
+    end
+  end
+
+  def destroy
+    @review.destroy
+    redirect_to play_path(@play)
+  end
+
+  private
+
+  def find_review
+    @review = Review.find(params[:id])
+  end
+
+Second, we need to create a new view in the directory of reviews called "edit.html.erb" and add the following =>
+
+  <div class="col-md-10 col-md-offset-1">
+    <div class="edit-review-form">
+      <h1> Edit Review </h1>
+        <%= simple_form_for([@play, @review]) do |f| %>
+          <div id="rating-form">
+            <%= f.input :rating %>
+          </div>
+          <%= f.input :comment %>
+          <%= f.button :submit, :class => "btn-custom2" %>
+        <% end %>
+      </div>
+  </div>
+
+Third we need to add the following inside the partial called "_review.html.erb" =>
+
+  <div class="review">
+    <p><%= review.rating %></p>
+    <p class="review-comment"><%= review.comment %></p>
+
+    <% if user_signed_in? %>
+      <% if review.user_id == current_user.id %>
+        <div class="links btn-group">
+          <%= link_to "Edit", edit_play_review_path(review.play, review), class: "btn btn-custom" %>
+          <%= link_to "Delete", play_review_path(review.play, review), method: :delete, data: { confirm: "Are you sure" }, class: "btn btn-custom" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 
